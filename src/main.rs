@@ -14,13 +14,15 @@ fn find_median(v: &Vec<i32>) -> i32 {
     let idx = (v.len() / 2) as i32;
     let median_option: Option<&i32> = v.get(idx as usize);
     let mut median: i32 = -1;
+    let message: String;
     match median_option {
         Some(val) => {
             median = *val;
+            message = format!("The median is : {}", median);
         },
-        None => println!("median is None, something is wrong with the index {idx}")
+        None => message = format!("median is None, something is wrong with the index {idx}")
     }
-    println!("The median is : {median}");
+    println!("{}", message);
 
     median
 }
