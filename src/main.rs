@@ -3,6 +3,28 @@ use std::collections::HashMap;
 fn main() {
     let v = vec![3, 56, 234, 3, 56, 9, 2, 324, 879, 56, 456, 3, 2, 9, 9, 324, 56, 56, 3];
     find_median_and_mode(v);
+
+    let v: Vec<&str> = vec![
+        "first",
+        "apple"
+    ];
+    for word in v {
+        println!("{}", convert_to_pig_latin(word));
+    }
+}
+
+fn convert_to_pig_latin(word: &str) -> String {
+    if word.len() == 0 {
+        String::from("")
+    } else {
+        const VOWELS: [char; 5] = ['a', 'e', 'i', 'o', 'u'];
+        let first_char: char = word.chars().next().unwrap();
+        if VOWELS.contains(&first_char) {
+            String::from(word) + "-hay"
+        } else {
+            String::from(&word[1..]) + "-" + first_char.to_string().as_str() + "ay"
+        }
+    }
 }
 
 fn find_median_and_mode(mut v: Vec<i32>) -> (i32, i32) {
@@ -44,3 +66,5 @@ fn find_mode(v: &Vec<i32>) -> i32 {
 
     mode
 }
+
+
