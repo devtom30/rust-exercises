@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::io;
 
 fn main() {
     let v = vec![3, 56, 234, 3, 56, 9, 2, 324, 879, 56, 456, 3, 2, 9, 9, 324, 56, 56, 3, 345, 456, 567, 567, 678, 789, 123, 123, 345, 234];
@@ -10,6 +11,37 @@ fn main() {
     ];
     for word in v {
         println!("{}", convert_to_pig_latin(word));
+    }
+    
+    basic_rh_interactive();
+}
+
+fn basic_rh_interactive() {
+    let mut employees: HashMap<String, Vec<String>> = HashMap::from([
+        (String::from("Sales"), Vec::from([String::from("Henry"), String::from("Carlotta"), String::from("Robert")])),
+        (String::from("Engineering"), Vec::from([String::from("Arthur"), String::from("Elena"), String::from("Angela"), String::from("Ricardo"), String::from("Michele")]))
+    ]);
+
+    println!("Please input your request: ");
+
+    let mut request = String::new();
+
+    io::stdin()
+        .read_line(&mut request)
+        .expect("Failed to read line");
+
+    println!("You guessed: {request}");
+
+    show_employees_by_department(&employees);
+}
+
+fn show_employees_by_department(employees: &HashMap<String, Vec<String>>) {
+    for department in employees.keys() {
+        println!("{}", department);
+        let department_employees: &Vec<String> = employees.get(department).unwrap();
+        for employee in department_employees {
+            println!("{}", format!("{:>50}", employee));
+        }
     }
 }
 
