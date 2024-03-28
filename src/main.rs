@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 fn main() {
-    let v = vec![3, 56, 234, 3, 56, 9, 2, 324, 879, 56, 456, 3, 2, 9, 9, 324, 56, 56, 3];
+    let v = vec![3, 56, 234, 3, 56, 9, 2, 324, 879, 56, 456, 3, 2, 9, 9, 324, 56, 56, 3, 345, 456, 567, 567, 678, 789, 123, 123, 345, 234];
     find_median_and_mode(v);
 
     let v: Vec<&str> = vec![
@@ -33,19 +33,23 @@ fn find_median_and_mode(mut v: Vec<i32>) -> (i32, i32) {
 }
 
 fn find_median(v: &Vec<i32>) -> i32 {
-    let idx = (v.len() / 2) as i32;
-    let median_option: Option<&i32> = v.get(idx as usize);
     let mut median: i32 = -1;
     let message: String;
-    match median_option {
-        Some(val) => {
-            median = *val;
-            message = format!("The median is : {}", median);
-        },
-        None => message = format!("median is None, something is wrong with the index {idx}")
+    if !v.is_empty() {
+        let mut v = v.clone();
+        v.dedup();
+        let idx = v.len() / 2;
+        match v.get(idx) {
+            Some(val) => {
+                median = *val;
+                message = format!("The median is : {}", median);
+            },
+            None => message = format!("median is None, something is wrong with the index {idx}")
+        }
+    } else {
+        message = String::from("Vector is empty…")
     }
     println!("{}", message);
-
     median
 }
 
