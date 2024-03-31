@@ -15,12 +15,6 @@ fn main() {
         println!("{}", convert_to_pig_latin(word));
     }
 
-    let re = RegexBuilder::new(r"foo(?-i:bar)quux")
-        .case_insensitive(true)
-        .build()
-        ;
-    assert!(re.unwrap().is_match("FoObarQuUx"));
-
     basic_rh_interactive();
 }
 
@@ -50,7 +44,7 @@ fn basic_rh_interactive() {
 
 fn make_function(request: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> {
     if ! check_request(&request) {
-        return Box::new(move |h| ());
+        return Box::new(move |_h| ());
     }
 
     let re_add_result = RegexBuilder::new(r"Add +(\w+) +to +(\w+) *")
@@ -61,25 +55,14 @@ fn make_function(request: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<Str
         println!("re_add_result.is_ok()");
         re_add = re_add_result.unwrap();
     } else {
-        return Box::new(move |h| ());
+        return Box::new(move |_h| ());
     }
     let captures_option = re_add.captures(&*request);
     let add_values: Vec<String> = captures_option.map_or_else(|| vec![], |captures: Captures| vec![captures[1].to_string(), captures[2].to_string()]);
     if add_values.len() > 0 {
         return make_closure(add_values[0].clone(), add_values[1].clone())
     }
-
-    let re_display_result = RegexBuilder::new(r"^Display +(\w+) +to +(\w+) *$")
-        .case_insensitive(true)
-        .build();
-    let re_display: Regex;
-    if re_display_result.is_ok() {
-        println!("re_display_result.is_ok()");
-        re_display = re_display_result.unwrap();
-    } else {
-        return Box::new(move |h| ());
-    }
-    return Box::new(move |h| ());
+    return Box::new(move |_h| ());
 }
 
 fn make_closure(p0: String, p1: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> {
@@ -93,11 +76,6 @@ fn make_closure(p0: String, p1: String) -> Box<dyn FnOnce(&mut HashMap<String, V
 
 fn check_request(request: &String) -> bool {
     request.len() > 7
-}
-
-fn check_action(action: &String) -> bool {
-    let possible_actions: Vec<&str> = Vec::from(["add", "display"]);
-    return possible_actions.contains(&&*action.to_lowercase());
 }
 
 fn show_employees_by_department(employees: &HashMap<String, Vec<String>>) {
