@@ -34,17 +34,20 @@ fn basic_rh_interactive() {
             .expect("Failed to read line");
 
         println!("You asked: {request}");
-        let fn_once: Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> = make_function(request);
-        fn_once(&mut employees);
+        // let fn_once: Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> =
+        match make_function(request) {
+            Ok(fn_once) => { fn_once(&mut employees) }
+            Err(_) => { println!("Error when making function, nothing to do") }
+        }
         // employees.insert()
 
         show_employees_by_department(&employees);
     }
 }
 
-fn make_function(request: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> {
+fn make_function(request: String) -> Result<Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()>, String> {
     if ! check_request(&request) {
-        return Box::new(move |_h| ());
+        return Err(String::from("unrecognized request (too short)"));
     }
 
     let re_add_result = RegexBuilder::new(r"Add +(\w+) +to +(\w+) *")
@@ -55,14 +58,14 @@ fn make_function(request: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<Str
         println!("re_add_result.is_ok()");
         re_add = re_add_result.unwrap();
     } else {
-        return Box::new(move |_h| ());
+        return Err(String::from("unrecognized request"));
     }
     let captures_option = re_add.captures(&*request);
     let add_values: Vec<String> = captures_option.map_or_else(|| vec![], |captures: Captures| vec![captures[1].to_string(), captures[2].to_string()]);
     if add_values.len() > 0 {
-        return make_closure(add_values[0].clone(), add_values[1].clone())
+        return Ok(make_closure(add_values[0].clone(), add_values[1].clone()))
     }
-    return Box::new(move |_h| ());
+    return return Err(String::from("unrecognized request"));
 }
 
 fn make_closure(p0: String, p1: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> {
