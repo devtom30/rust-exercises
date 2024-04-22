@@ -65,7 +65,7 @@ fn make_function(request: String) -> Result<Box<dyn FnOnce(&mut HashMap<String, 
     if add_values.len() > 0 {
         return Ok(make_closure(add_values[0].clone(), add_values[1].clone()))
     }
-    return return Err(String::from("unrecognized request"));
+    return Err(String::from("unrecognized request"));
 }
 
 fn make_closure(p0: String, p1: String) -> Box<dyn FnOnce(&mut HashMap<String, Vec<String>>) -> ()> {
